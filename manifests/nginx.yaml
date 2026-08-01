@@ -31,7 +31,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: client-server
+      app: client-server # match with the pod labels
   template:
     metadata:
       labels:
@@ -72,11 +72,11 @@ metadata:
   name: nginx-service
   namespace: client
   labels:
-    app: client-server
+    app: client-service
     tier: frontend
 spec:
   selector:
-    app: client-server
+    app: client-server # match with the pod labels
   ports:
     - port: 80
       targetPort: 80
