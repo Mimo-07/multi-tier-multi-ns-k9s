@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configmap
+  namespace: client
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+      server {
+        listen 80;
+
+        location / {
+          proxy_pass http://api-service.core.svc.cluster.local;
+        }
+      }
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: client
+  labels:
+    app: client-server
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-server
+  template:
+    metadata:
+      labels:
+        app: client-server
+        tier: frontend
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25-alpine
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: nginx-configmap
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-configmap
+          configMap:
+            name: nginx-configmap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: client
+  labels:
+    app: client-server
+    tier: frontend
+spec:
+  selector:
+    app: client-server
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+  type: ClusterIP
