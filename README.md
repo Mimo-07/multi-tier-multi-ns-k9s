@@ -35,3 +35,9 @@ In git bash from the repo root:
 
 This will setup the cluster, create the nodes, add pods in the nodes and create the services with endpoints for communication. Once this is finished, you
 can start playing with the cluster
+
+# Cleanup
+
+```bash
+kind delete cluster --name=multi-tier-multi-ns
+```
