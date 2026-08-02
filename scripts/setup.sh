@@ -86,9 +86,13 @@ deploy_application(){
     # Deploy netshoot debug pod
     kubectl apply -f manifests/netshoot.yaml
 
+    # Deploy redis and redis-client pod
+    kubectl apply -f manifests/redis.yaml
+    kubectl apply -f manifests/redis-client.yaml
+
     log_info "Waiting for all pods to be ready..."
     kubectl -n client wait --for=condition=ready pod --all --timeout=120s
-    kubectl -n core wait --for=condition=ready pod --all --timeout=120s
+    kubectl -n core wait --for=condition=ready pod --all --timeout=240s
 
     log_info "Application deployed successfully!"
 }
