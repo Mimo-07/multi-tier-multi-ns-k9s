@@ -34,8 +34,8 @@ wait_for_docker() {
 create_cluster(){
   log_info "Creating kind cluster..."
 
-  if kind get clusters 2>/dev/null | grep -q "sre-lab"; then
-    log_warn "Cluster 'sre-lab' already exists. Skipping creation."
+  if kind get clusters 2>/dev/null | grep -q "multi-tier-multi-ns"; then
+    log_warn "Cluster 'multi-tier-multi-ns' already exists. Skipping creation."
     return 0
   fi
 
@@ -91,8 +91,9 @@ deploy_application(){
     kubectl apply -f manifests/redis-client.yaml
 
     log_info "Waiting for all pods to be ready..."
-    kubectl -n client wait --for=condition=ready pod --all --timeout=120s
-    kubectl -n core wait --for=condition=ready pod --all --timeout=240s
+    kubectl -n client wait --for=condition=ready pod --all --timeout=240s &
+    kubectl -n core wait --for=condition=ready pod --all --timeout=240s &
+    wait
 
     log_info "Application deployed successfully!"
 }

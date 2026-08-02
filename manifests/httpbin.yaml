@@ -37,6 +37,23 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 10
+        - name: netshoot
+          image: nicolaka/netshoot:latest
+          command:
+            - sleep
+            - "infinity"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
 ---
 apiVersion: v1
 kind: Service
