@@ -1,7 +1,7 @@
 # multi-tier-multi-ns-k9s
 
 This is my extension project for the CS-6250 Kubernetes tutorial. The existing tutorial had a single namespace which hosted the pods in which we added default-deny-all traffic and added allow rules only for the expected policies. This project extends that idea into a multi-tier multi-namespace network
-which simulates actual frontend web server and backend web server
+which simulates actual frontend web server and backend server
 
 # Prerequisites
 
