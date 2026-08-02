@@ -36,6 +36,19 @@ In git bash from the repo root:
 This will setup the cluster, create the nodes, add pods in the nodes and create the services with endpoints for communication. Once this is finished, you
 can start playing with the cluster
 
+Apply zero-trust policy
+
+```bash
+./scripts/apply-zero-trust.sh
+```
+
+If you want to remove all the rules and by default allow all traffic
+
+```bash
+kubectl delete netpol --all -n core
+kubectl delete netpol --all -n client
+```
+
 # Cleanup
 
 ```bash
