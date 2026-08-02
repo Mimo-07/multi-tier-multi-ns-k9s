@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: ingress-to-api
+  name: egress-from-api
   namespace: core
 spec:
   podSelector:
@@ -9,16 +9,16 @@ spec:
       app: api
       tier: backend
   policyTypes:
-    - Ingress
-  ingress:
-    - from:
+    - Egress
+  egress:
+    - to:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: client
+              kubernetes.io/metadata.name: core
           podSelector:
             matchLabels:
-              app: client-server
-              tier: frontend
+              app: db
+              tier: backend
       ports:
         - protocol: TCP
-          port: 80
+          port: 6379

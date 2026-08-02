@@ -4,7 +4,10 @@ metadata:
   name: egress-from-web
   namespace: client
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      app: client-server
+      tier: frontend
   policyTypes:
     - Egress
   egress:
