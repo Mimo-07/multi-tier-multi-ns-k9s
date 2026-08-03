@@ -22,7 +22,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx
   namespace: client
   labels:
     app: client-server

@@ -1,7 +1,6 @@
-# multi-tier-multi-ns-k9s
+# Multi tier multi namespace kubernetes Cluster (Zero Trust)
 
-This is my extension project for the CS-6250 Kubernetes tutorial. The existing tutorial had a single namespace which hosted the pods in which we added default-deny-all traffic and added allow rules only for the expected policies. This project extends that idea into a multi-tier multi-namespace network
-which simulates actual frontend web server and backend server
+This project extends a single-namespace Kubernetes lab into a realistic application consisting of frontend, API, and Redis tiers deployed across multiple namespaces. It demonstrates least-privilege communication using Kubernetes Cilium NetworkPolicies and verifies connectivity before and after applying Zero Trust policies.
 
 # Prerequisites
 
@@ -13,7 +12,7 @@ Docker is required to be installed for this project
 flowchart LR
     subgraph CLIENT["client (frontend)"]
         nginx["nginx"]
-        netshoot["netshoot"]
+        netshoot["netshoot (debug)"]
     end
 
     subgraph CORE["core (backend)"]
@@ -24,6 +23,17 @@ flowchart LR
     CLIENT -->|TCP Port 80| api
     api -->|TCP Port 6379| redis
 ```
+
+# Features
+
+- Multi-tier Kubernetes architecture
+- Multiple namespaces
+- ClusterIP Services
+- ConfigMaps
+- DNAT Mapping
+- Zero Trust networking
+- Cilium NetworkPolicies
+- Cross Namespace DNS lookup
 
 # Run the lab
 
@@ -47,6 +57,45 @@ If you want to remove all the rules and by default allow all traffic
 ```bash
 kubectl delete netpol --all -n core
 kubectl delete netpol --all -n client
+```
+
+# Test it
+
+After applying the zero-trust policy, connectivity matrix expectation is
+
+| From            | To          | Port | Expected   |
+| --------------- | ----------- | ---- | ---------- |
+| client/web      | core/api    | 80   | ✅ pass    |
+| core/api        | core/db     | 6379 | ✅ pass    |
+| client/web      | core/db     | 6379 | ⛔ blocked |
+| client/netshoot | core/api    | 80   | ⛔ blocked |
+| any pod         | example.com | 80   | ⛔ blocked |
+
+```bash
+# web -> api
+kubectl exec -n client deploy/nginx -- curl -sS api-service.core.svc.cluster.local.
+# expected to see server response from httpbin
+
+# api -> db
+kubectl exec -n core deploy/httpbin -c netshoot -- nc -zv redis-service 6379
+# expected to see TCP handshake done with the redis-db service
+```
+
+# Files
+
+```
+
+├── manifests/
+│ Deployments
+│
+├── policies/
+│ Zero Trust NetworkPolicies
+│
+├── scripts/
+│ Cluster setup and policy application
+│
+└── README.md
+
 ```
 
 # Cleanup

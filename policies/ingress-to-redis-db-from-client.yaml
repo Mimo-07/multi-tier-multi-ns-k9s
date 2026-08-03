@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-to-redis-db-from-client
+  namespace: core
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+      tier: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: core
+          podSelector:
+            matchLabels:
+              app: redis-client
+              tier: client
+      ports:
+        - protocol: TCP
+          port: 6379
