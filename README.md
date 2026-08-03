@@ -4,7 +4,8 @@ This project extends a single-namespace Kubernetes lab into a realistic applicat
 
 # Prerequisites
 
-Docker is required to be installed for this project
+1. Docker is required to be installed for this project
+2. Having git bash installed is preferred
 
 # Architecture diagram
 
@@ -45,6 +46,17 @@ In git bash from the repo root:
 
 This will setup the cluster, create the nodes, add pods in the nodes and create the services with endpoints for communication. Once this is finished, you
 can start playing with the cluster
+
+See the cluster, in your terminal
+run
+
+```bash
+C:\Users\bijit>k9s
+```
+
+You will see the kubernetes cluster.
+
+Intially there are no network policies, so you can talk to any endpoint on any namespace in the cluster. The zero-trust behaviour is introduced after running `apply-zero-trust.sh`
 
 Apply zero-trust policy
 
